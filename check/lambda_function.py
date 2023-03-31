@@ -5,7 +5,6 @@ import urllib.parse
 import random
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from aws_requests_auth.aws_auth import AWSRequestsAuth
-
 s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
