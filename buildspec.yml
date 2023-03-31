@@ -1,17 +1,9 @@
-version: 0.2
-
-phases:
-  build:
+version: 0.2  
+phases:  
+  install:
     commands:
-      - echo "Changing into source directory $CODEBUILD_SRC_DIR"
-      - cd $CODEBUILD_SRC_DIR
-      - echo "Installing dependencies into src file"
-      - pip install -t /src -r requirements.txt
-      - echo "Packaging cloudformation template"
-      - aws cloudformation package --template-file cfn.yaml --s3-bucket $S3_BUCKET \
-                --s3-prefix $S3_BUILDS_PREFIX --output-template-file $TEMPLATE_FILE_NAME
-artifacts:
+      - aws cloudformation package --template-file search-photos.yaml --s3-bucket lambda-deployement-pipeline-bucket --output-template-file search-photos.yaml
+artifacts:  
+  type: zip
   files:
-    - '$TEMPLATE_FILE_NAME'
-    - '*config.json'
-  discard-paths: yes
+    - search-photos.yaml
