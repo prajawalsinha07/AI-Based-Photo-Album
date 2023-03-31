@@ -1,9 +1,10 @@
-version: 0.2  
-phases:  
+version: 0.1
+phases:
   install:
     commands:
-      - aws cloudformation package --template-file search-photos.yaml --s3-bucket lambda-deployement-pipeline-bucket1 --output-template-file search-photos.yaml
-artifacts:  
+      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket hw3-lambdapipeline-lzj --output-template-file outputsamtemplate.yml
+artifacts:
   type: zip
   files:
-    - search-photos.yaml
+    - samTemplate.yaml
+    - outputsamtemplate.yml
