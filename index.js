@@ -74,14 +74,18 @@ function searchPhotos(searchText) {
             console.log("image_paths : ", image_paths);
 
             var photosDiv = document.getElementById("photos_search_results");
+            console.log(photosDiv)
             photosDiv.innerHTML = "";
 
             var n;
             for (n = 0; n < image_paths.length; n++) {
                 images_list = image_paths[n].split('/');
                 imageName = images_list[images_list.length - 1];
+                console.log(images_list)
+                console.log(imageName)
 
                 photosDiv.innerHTML += '<figure><img src="' + image_paths[n] + '" style="width:25%"><figcaption>' + imageName + '</figcaption></figure>';
+                console.log(photosDiv.innerHTML)
             }
 
         }).catch(function(result) {
@@ -109,25 +113,37 @@ function uploadPhoto() {
         alert("Please upload a valid .png/.jpg/.jpeg file!");
     } else {
 
-        var params = {};
-        var additionalParams = {
+        let config = {
             headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': file.type
-            }
-        };
+                  "Content-Type": file.type,
+                  "X-Api-Key": "K8ug9vPmZO3LXNVE3FYBU7jyEz6fcWKy4Mj1CyKC",
+                  "x-amz-meta-CustomLabels": custom_labels,
+                },
+            };
+        // var params = {};
+        // var additionalParams = {
+        //     headers: {
+        //         'Access-Control-Allow-Origin': '*',
+        //         'Content-Type': file.type
+        //     }
+        // };
+
+        url = "https://j4gbip87yk.execute-api.us-east-1.amazonaws.com/dev/upload/cloud-project-photos/" + file.name;
+          axios.put(url, file, config).then((response) => {
+            alert("Upload successful!!");
+          });
         
-        reader.onload = function (event) {
-            body = btoa(event.target.result);
-            console.log('Reader body : ', body);
-            return apigClient.folderItemPut(params, additionalParams)
-            .then(function(result) {
-                console.log(result);
-            })
-            .catch(function(error) {
-                console.log(error);
-            })
-        }
-        reader.readAsBinaryString(file);
+        // reader.onload = function (event) {
+        //     body = btoa(event.target.result);
+        //     console.log('Reader body : ', body);
+        //     return apigClient.uploadBucketKeyPut(params, body, additionalParams)
+        //     .then(function(result) {
+        //         console.log(result);
+        //     })
+        //     .catch(function(error) {
+        //         console.log(error);
+        //     })
+        // }
+        // reader.readAsBinaryString(file);
     }
 }
