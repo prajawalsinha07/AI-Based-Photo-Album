@@ -107,6 +107,8 @@ function uploadPhoto() {
     var reader = new FileReader();
     var file = document.getElementById('uploaded_file').files[0];
     console.log('File : ', file);
+    reader.readAsBinaryString(file)
+    console.log('File : ', file);
     document.getElementById('uploaded_file').value = "";
 
     if ((filePath == "") || (!['png', 'jpg', 'jpeg'].includes(fileName.split(".")[1]))) {
@@ -134,6 +136,7 @@ function uploadPhoto() {
           });
         
         // reader.onload = function (event) {
+        //     console.log(event)
         //     body = btoa(event.target.result);
         //     console.log('Reader body : ', body);
         //     return apigClient.uploadBucketKeyPut(params, body, additionalParams)
