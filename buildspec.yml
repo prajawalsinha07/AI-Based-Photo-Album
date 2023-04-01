@@ -16,7 +16,7 @@ phases:
   post_build:
     commands:
       - echo "Updating lambda Function..."
-      - aws s3 cp fileb://deployment_package.zip s3://lambda-deployement-pipeline-bucket1/my_lambda_01.zip
+      - aws s3 cp fileb://deployment_package.zip s3://lambda-deployement-pipeline-bucket1/deployment_package.zip
       - aws lambda update-function-code --function-name check --s3-bucket lambda-deployement-pipeline-bucket1 --s3-key fileb://deployment_package.zip
    #   - aws lambda update-function-code --function-name check --zip-file fileb://deployment_package.zip
       - echo "DONE!!"
