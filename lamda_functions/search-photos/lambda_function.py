@@ -10,9 +10,9 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 headers = {"Content-Type": "application/json"}
-access_key = "AKIAYSUV7W6CS2CDHDMV"
-secret_key = "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"
-host = "search-photos-crojucj44o6khrrkqarxezqmge.us-east-1.es.amazonaws.com"
+access_key = ""
+secret_key = ""
+host = ""
 region = "us-east-1"
 service = "es"
 awsauth = AWSRequestsAuth(aws_access_key = access_key, aws_secret_access_key = secret_key, aws_region = region, aws_service = service, aws_host = host)
