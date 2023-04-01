@@ -10,9 +10,9 @@ s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
     label_list=[]
-    access_key = "AKIAYSUV7W6CS2CDHDMV"
-    secret_key = "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"
-    host = "search-photos-crojucj44o6khrrkqarxezqmge.us-east-1.es.amazonaws.com"
+    access_key = ""
+    secret_key = ""
+    host = ""
     region = "us-east-1"
     service = "es"
     awsauth = AWSRequestsAuth(aws_access_key = access_key, aws_secret_access_key = secret_key,
