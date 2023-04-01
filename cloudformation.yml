@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  # Lambda functions
+  IndexPhotosFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        S3Bucket: "my-lambda-functions1"
+        S3Key: "index-photos-CF.zip"
+      FunctionName: "index-photos-CF"
+      Handler: "index.handler"
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: "python3.10"
+      Timeout: 30
+  SearchPhotosFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        S3Bucket: "my-lambda-functions1"
+        S3Key: "search-photos-CF.zip"
+      FunctionName: "search-photos-CF"
+      Handler: "index.handler"
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: "python3.10"
+      Timeout: 30
+  LambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action:
+              - "sts:AssumeRole"
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Effect: "Allow"
+              Resource: "*"
+            - Action:
+                - "es:ESHttpPost"
+              Effect: "Allow"
+              Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/my-elasticsearch-cluster/*"
+  # API Gateway
+  ApiGateway:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: "AI Photo Search-CF"
+      Description: "API Gateway for AI photo search"
+  RootResource:
+    Type: "AWS::ApiGateway::Resource"
+    Properties:
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: "ai-photos"
+      RestApiId: !Ref ApiGateway
+  IndexPhotosMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref RootResource
+      HttpMethod: "POST"
+      AuthorizationType: "NONE"
+      Integration:
+        Type: "AWS_PROXY"
+        IntegrationHttpMethod: "POST"
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexPhotosFunction.Arn}/invocations"
+  SearchPhotosMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref RootResource
+      HttpMethod: "GET"
+      AuthorizationType: "NONE"
+      Integration:
+        Type: "AWS_PROXY"
+        IntegrationHttpMethod: "POST"
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchPhotosFunction.Arn}/invocations"
+  Deployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      - "IndexPhotosMethod"
+      - "SearchPhotosMethod"
+    Properties:
+      RestApiId: !Ref ApiGateway
+      StageName: "dev"
