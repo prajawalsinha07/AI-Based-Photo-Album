@@ -7,6 +7,7 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 s3 = boto3.client('s3')
+# test comment
 
 def lambda_handler(event, context):
     label_list=[]
